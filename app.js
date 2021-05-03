@@ -4,12 +4,11 @@ if (process.env.NODE_ENV !== "production") {
 
 const express = require("express");
 const session = require("express-session");
-const bcrypt = require("bcrypt");
-const LocalStrategy = require("passport-local").Strategy;
 const MongoStore = require("connect-mongo")(session);
 const mongoose = require("mongoose");
 const expressLayouts = require("express-ejs-layouts");
 const flash = require("express-flash");
+const passport = require("passport");
 
 //general setup  --------------//
 const app = express();
@@ -32,6 +31,11 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+//init passport
+require("./config/passport")(passport);
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Connect flash
 app.use(flash());
@@ -57,4 +61,4 @@ app.use("/", require("./routes/register"));
 app.use("/login", require("./routes/login"));
 app.use("/forgot", require("./routes/forgot"));
 app.use("/reset_password", require("./routes/password_reset"));
-app.use("/dasboard", require("./routes/dashboard"));
+app.use("/dashboard", require("./routes/dashboard"));
