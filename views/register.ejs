@@ -8,7 +8,12 @@
         <div class="card fat">
           <div class="card-body">
             <h4 class="card-title">Register</h4>
-            <form method="POST" class="my-login-validation" novalidate="">
+            <form
+              method="POST"
+              action="/register"
+              class="my-login-validation"
+              novalidate=""
+            >
               <div class="form-group">
                 <label for="name">Name</label>
                 <input
@@ -18,6 +23,7 @@
                   name="firstName"
                   required
                   autofocus
+                  value="<%= typeof firstName != 'undefined' ? firstName : '' %>"
                 />
                 <div class="invalid-feedback">What's your name?</div>
               </div>
@@ -31,6 +37,7 @@
                   name="lastName"
                   required
                   autofocus
+                  value="<%= typeof lastName != 'undefined' ? lastName : '' %>"
                 />
                 <div class="invalid-feedback">What's your last name?</div>
               </div>
@@ -43,6 +50,7 @@
                   class="form-control"
                   name="email"
                   required
+                  value="<%= typeof email != 'undefined' ? email : '' %>"
                 />
                 <div class="invalid-feedback">Your email is invalid</div>
               </div>
@@ -56,6 +64,21 @@
                   name="password"
                   required
                   data-eye
+                  value="<%= typeof password != 'undefined' ? password : '' %>"
+                />
+                <div class="invalid-feedback">Password is required</div>
+              </div>
+
+              <div class="form-group">
+                <label for="password2">Reinter your password</label>
+                <input
+                  id="password2"
+                  type="password"
+                  class="form-control"
+                  name="password2"
+                  required
+                  data-eye
+                  value="<%= typeof password2 != 'undefined' ? password2 : '' %>"
                 />
                 <div class="invalid-feedback">Password is required</div>
               </div>
