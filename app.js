@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const expressLayouts = require("express-ejs-layouts");
 const flash = require("express-flash");
 const passport = require("passport");
+const db = require("./config/keys.js").mongoURI;
 
 //general setup  --------------//
 const app = express();
@@ -23,12 +24,24 @@ app.set("view engine", "ejs");
 //setting a static folder
 app.use(express.static("./public"));
 
+//database setup
+
+mongoose
+  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB Connected..."))
+  .catch((err) => console.log(err));
+
+const sessionStore = new MongoStore({
+  mongooseConnection: mongoose.connection,
+  collection: "sessions",
+});
 // Express session
 app.use(
   session({
     secret: "secret",
     resave: true,
     saveUninitialized: true,
+    store: sessionStore,
   })
 );
 
@@ -47,14 +60,6 @@ app.use(function (req, res, next) {
   res.locals.error = req.flash("error");
   next();
 });
-
-//database setup
-const db = require("./config/keys.js").mongoURI;
-
-mongoose
-  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log("MongoDB Connected..."))
-  .catch((err) => console.log(err));
 
 // the routes -------------------//
 app.use("/", require("./routes/register"));

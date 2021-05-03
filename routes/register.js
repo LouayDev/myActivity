@@ -1,16 +1,17 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
-// const flash = require("")
 //importing the Users model
 const Users = require("../models/Users");
+//importing auth
+const { isNotAuthenticated } = require("../config/auth");
 
 router.get("/", (req, res) => {
   res.render("register");
 });
 
 //register
-router.post("/register", (req, res) => {
+router.post("/register", isNotAuthenticated, (req, res) => {
   const { firstName, lastName, email, password, password2 } = req.body;
   let errors = [];
 
