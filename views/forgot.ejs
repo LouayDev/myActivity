@@ -6,11 +6,12 @@
           <img src="img/logo.jpg" alt="bootstrap 4 login page" />
         </div>
         <div class="card fat">
+          <%- include ("./partials/messages"); %>
           <div class="card-body">
             <h4 class="card-title">Forgot Password</h4>
             <form
               method="POST"
-              action="/routes/forgot.js"
+              action="/forgot"
               class="my-login-validation"
               novalidate=""
             >
