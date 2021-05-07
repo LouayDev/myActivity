@@ -9,7 +9,12 @@
           <div class="card-body">
             <%- include ("./partials/messages"); %>
             <h4 class="card-title">Reset Password</h4>
-            <form method="POST" class="my-login-validation" novalidate="">
+            <form
+              method="POST"
+              action=""
+              class="my-login-validation"
+              novalidate=""
+            >
               <div class="form-group">
                 <label for="new-password">New Password</label>
                 <input
@@ -17,6 +22,17 @@
                   type="password"
                   class="form-control"
                   name="password"
+                  required
+                  autofocus
+                  data-eye
+                />
+
+                <label for="new-password">confirm password</label>
+                <input
+                  id="new-password2"
+                  type="password"
+                  class="form-control"
+                  name="password2"
                   required
                   autofocus
                   data-eye

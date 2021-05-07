@@ -14,6 +14,7 @@ const db = require("./config/keys.js").mongoURI;
 //general setup  --------------//
 const app = express();
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, console.log("server running on :", "http://localhost:5000"));
 //alowing our app to parse the url
 app.use(express.json());
@@ -29,6 +30,8 @@ mongoose
   .connect(db, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true,
   })
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.log(err));
@@ -37,6 +40,9 @@ const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection,
   collection: "sessions",
 });
+// Connect flash
+app.use(flash());
+
 // Express session
 app.use(
   session({
@@ -52,9 +58,6 @@ require("./config/passport")(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Connect flash
-app.use(flash());
-
 // Global variables
 app.use(function (req, res, next) {
   res.locals.success_msg = req.flash("success_msg");
@@ -66,7 +69,9 @@ app.use(function (req, res, next) {
 
 // the routes -------------------//
 app.use("/", require("./routes/register"));
+app.use("/register", require("./routes/register"));
 app.use("/login", require("./routes/login"));
 app.use("/forgot", require("./routes/forgot"));
 app.use("/reset_password", require("./routes/password_reset"));
 app.use("/dashboard", require("./routes/dashboard"));
+app.use("/activate_account", require("./routes/activateAcc"));

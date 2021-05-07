@@ -14,6 +14,13 @@ module.exports = (passport) => {
             );
           }
 
+          if (!user.confirmed) {
+            return (
+              done(null, false),
+              { message: "your account is not confirmed yet" }
+            );
+          }
+
           bcrypt.compare(password, user.password, function (err, result) {
             if (result) {
               return done(null, user);

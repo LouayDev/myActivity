@@ -6,6 +6,11 @@ const UsersSchema = new mongoose.Schema({
   email: { type: String, trim: true, default: "", unique: true },
   password: { type: String, trim: true, default: "" },
   date: { type: Date, default: Date.now },
+  confirmed: { type: Boolean, default: false },
+  expireAt: {
+    type: Date,
+    index: { expires: "1d" },
+  },
 });
 
 module.exports = mongoose.model("Users", UsersSchema);

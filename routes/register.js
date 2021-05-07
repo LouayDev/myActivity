@@ -1,17 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
 //importing the Users model
 const Users = require("../models/Users");
 //importing auth
-const { isNotAuthenticated } = require("../config/auth");
-
-router.get("/", (req, res) => {
+const bcrypt = require("bcrypt");
+const { isNotAuthenticated, isActivated } = require("../config/auth");
+//importing the activate account email API
+const { activateAccountAPI } = require("../config/APIs");
+router.get("/", isNotAuthenticated, (req, res) => {
   res.render("register");
 });
 
 //register
-router.post("/register", isNotAuthenticated, (req, res) => {
+router.post("/register", isNotAuthenticated, isActivated, (req, res) => {
   const { firstName, lastName, email, password, password2 } = req.body;
   let errors = [];
 
@@ -49,29 +50,23 @@ router.post("/register", isNotAuthenticated, (req, res) => {
           password2,
         });
       } else {
-        const newUser = new Users({
-          firstName,
-          lastName,
-          email,
-          password,
-        });
-
         bcrypt.genSalt(10, (err, salt) => {
-          bcrypt.hash(newUser.password, salt, (err, hash) => {
+          bcrypt.hash(password, salt, (err, hash) => {
             if (err) throw err;
-            newUser.password = hash;
+            const newUser = new Users({
+              firstName,
+              lastName,
+              email,
+              password: hash,
+            });
             newUser
               .save()
-              .then((user) => {
-                req.flash(
-                  "success_msg",
-                  "you are now successfully registered and can login"
-                );
-                res.redirect("/login");
-              })
-              .catch((err) => console.log(err.message));
+              .then((user) => activateAccountAPI(user.id, user.firstName));
           });
         });
+
+        req.flash("suces_msg", "email has been sent to confirm your account");
+        res.redirect("/register");
       }
     });
   }
