@@ -40,8 +40,6 @@ const sessionStore = new MongoStore({
   mongooseConnection: mongoose.connection,
   collection: "sessions",
 });
-// Connect flash
-app.use(flash());
 
 // Express session
 app.use(
@@ -55,17 +53,19 @@ app.use(
 
 //init passport
 require("./config/passport")(passport);
-app.use(passport.initialize());
-app.use(passport.session());
-
+// Connect flash
+app.use(flash());
 // Global variables
 app.use(function (req, res, next) {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
-  res.locals.error = req.flash("error");
+  res.locals.error = req.flash().error;
 
   next();
 });
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // the routes -------------------//
 app.use("/", require("./routes/register"));

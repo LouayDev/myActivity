@@ -6,30 +6,27 @@ const Users = require("../models/Users");
 module.exports = (passport) => {
   passport.use(
     new Localstratigy({ usernameField: "email" }, (email, password, done) => {
-      Users.findOne({ email: email })
-        .then((user) => {
-          if (!user) {
-            return (
-              done(null, false), { message: "there is no user with this email" }
-            );
-          }
+      Users.findOne({ email: email }, (err, user) => {
+        if (err) throw err;
+        if (!user) {
+          return done(null, false);
+        }
 
-          if (!user.confirmed) {
-            return (
-              done(null, false),
-              { message: "your account is not confirmed yet" }
-            );
-          }
+        if (!user.confirmed) {
+          return done(null, false);
+        }
 
-          bcrypt.compare(password, user.password, function (err, result) {
-            if (result) {
-              return done(null, user);
-            } else {
-              return done(null, false, { message: "password incorrect" });
-            }
-          });
-        })
-        .catch((err) => done(err));
+        bcrypt.compare(password, user.password, function (er, result) {
+          if (er) {
+            return done(er);
+          }
+          if (result) {
+            return done(null, user);
+          } else {
+            return done(null, false);
+          }
+        });
+      });
     })
   );
 
